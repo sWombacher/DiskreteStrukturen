@@ -1,6 +1,9 @@
 project(DiskreteStrukturen)
 cmake_minimum_required(VERSION 3.1)
 
+set(CMAKE_BUILD_TYPE "Debug")
+#set(CMAKE_BUILD_TYPE "Release")
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -18,5 +21,4 @@ if(OPENMP_FOUND)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
-set(CMAKE_BUILD_TYPE "Debug")
 subDirs(p1 p2 p3)
