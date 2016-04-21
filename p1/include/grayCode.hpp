@@ -21,10 +21,16 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
 
     struct Iterator {
         Iterator& operator++() {
-            /// TODO
+            if (!this->_successor()){
+                // increase not possible
+                // -> last empty element
+                for (auto& e : this->m_Data)
+                    e = -1;
+            }
+            return *this;
         }
         Iterator& operator++(int) { return ++(*this); }
-        Iterator& succ() { return ++(*this); }
+        Iterator& successor() { return ++(*this); }
 
         bool operator==(const Iterator& rhs) const {
             return this->m_Data == rhs.m_Data;
@@ -36,7 +42,7 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
             return this->m_Data;
         }
 
-        friend std::ostream& operator<< (std::ostream& os, const Iterator& rhs){
+        friend std::ostream& operator<<(std::ostream& os, const Iterator& rhs) {
             for (const auto& e : rhs.m_Data)
                 os << e << ' ';
             os << std::endl;
@@ -46,6 +52,34 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
       private:
         friend GrayCode;
         Iterator() = default;
+
+        bool _successor(int recursionDepth = 0, bool increase = true) {
+            if (recursionDepth >= this->m_Data.size())
+                return false;
+
+            const int myIdx = this->m_Data.size() - 1 - recursionDepth;
+            const int myValue = this->m_Data[myIdx];
+
+            const bool rec_increase = myValue & 1 ? !increase : increase;
+            bool ret = this->_successor(recursionDepth + 1, rec_increase);
+
+            if (!ret){
+                // try in-/de-creasing own value
+                if (increase){
+                    if (myValue < q - 1)
+                        ++this->m_Data[myIdx];
+                    else
+                        return false;
+                }
+                else{
+                    if (myValue > 0)
+                        --this->m_Data[myIdx];
+                    else
+                        return false;
+                }
+            }
+            return true;
+        }
         std::array<int, _SymbolCount> m_Data;
     };
 
@@ -80,7 +114,8 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
     static constexpr size_t vectorCount() { return MY_TYPE::COUNT; }
 
   private:
-    int _rank(const decltype(Iterator::m_Data)& data, int recursionDepth = 0) const {
+    int _rank(const decltype(Iterator::m_Data)& data,
+              int recursionDepth = 0) const {
         if (recursionDepth == data.size())
             return 0;
 
@@ -92,10 +127,10 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
         int recVal = this->_rank(data, recursionDepth + 1);
         bool revertOrder = myValue & 1;
         return skipRatio * myValue +
-               (revertOrder ? skipRatio - recVal - 1
-                            : recVal);
+               (revertOrder ? skipRatio - recVal - 1 : recVal);
     }
-    void _unrank(int rank, decltype(Iterator::m_Data)& dataOut, int recursionDepth = 0, bool invert_value = false) const {
+    void _unrank(int rank, decltype(Iterator::m_Data)& dataOut,
+                 int recursionDepth = 0, bool invert_value = false) const {
         if (recursionDepth == dataOut.size())
             return;
 
@@ -107,7 +142,7 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
 
         // calculate value to set
         // and adjust rank value for recursive call
-        while (rank >= skipRatio){
+        while (rank >= skipRatio) {
             ++myValue;
             rank -= skipRatio;
         }
