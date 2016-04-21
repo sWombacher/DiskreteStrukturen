@@ -13,6 +13,7 @@ int main() {
     typedef GrayCode<q, symbolCount, decltype(translate(0))> GRAY;
 
     GRAY gray(translate);
+    /*
     auto rank0 = gray.unrank(GRAY::vectorCount());
 
     auto iter_begin = gray.begin();
@@ -20,7 +21,11 @@ int main() {
 
     for (const auto& e : rank0)
         std::cout << e << ' ';
-    std::cout << std::endl;
+    std::cout << std::endl << std::endl << std::endl;
+    */
+
+    auto iter_start = gray.begin(8);
+    std::cout << iter_start << std::endl;
 
     return 0;
 }

@@ -5,6 +5,7 @@
 #include <functional>
 #include <inttypes.h>
 #include <algorithm>
+#include <iostream>
 #include <array>
 
 template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
@@ -31,14 +32,21 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
         bool operator!=(const Iterator& rhs) const {
             return this->m_Data != rhs.m_Data;
         }
-        const std::array<_AlphabetType, _SymbolCount>& getRawData() const {
+        const std::array<int, _SymbolCount>& getRawData() const {
             return this->m_Data;
+        }
+
+        friend std::ostream& operator<< (std::ostream& os, const Iterator& rhs){
+            for (const auto& e : rhs.m_Data)
+                os << e << ' ';
+            os << std::endl;
+            return os;
         }
 
       private:
         friend GrayCode;
         Iterator() = default;
-        std::array<_AlphabetType, _SymbolCount> m_Data;
+        std::array<int, _SymbolCount> m_Data;
     };
 
     int rank(const Iterator& iter) const {
@@ -47,20 +55,19 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
     }
     std::array<_AlphabetType, _SymbolCount> unrank(int rank) const {
         std::array<_AlphabetType, _SymbolCount> toReturn;
-        const Iterator iter = this->begin(rank);
+        decltype(Iterator::m_Data) data;
+        this->_unrank(rank, data);
         for (std::size_t i = 0; i < toReturn.size(); ++i)
-            toReturn[i] = this->m_AlphabetTranslator(iter.m_Data[i]);
+            toReturn[i] = this->m_AlphabetTranslator(data[i]);
         return toReturn;
     }
 
-    Iterator begin(size_t idx = 0) const {
-        if (idx >= COUNT)
+    Iterator begin(size_t rank = 0) const {
+        if (rank >= COUNT)
             return this->end();
 
         Iterator toReturn;
-
-        /// TODO
-
+        this->_unrank(rank, toReturn.m_Data);
         return toReturn;
     }
     Iterator end() const {
@@ -87,6 +94,34 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
         return skipRatio * myValue +
                (revertOrder ? skipRatio - recVal - 1
                             : recVal);
+    }
+    void _unrank(int rank, decltype(Iterator::m_Data)& dataOut, int recursionDepth = 0, bool invert_value = false) const {
+        if (recursionDepth == dataOut.size())
+            return;
+
+        int skipRatio = MY_TYPE::COUNT / q;
+        for (int i = 0; i < recursionDepth; ++i)
+            skipRatio /= q;
+
+        int myValue = 0;
+
+        // calculate value to set
+        // and adjust rank value for recursive call
+        while (rank >= skipRatio){
+            ++myValue;
+            rank -= skipRatio;
+        }
+
+        // value invert requried?
+        if (invert_value)
+            myValue = q - 1 - myValue;
+
+        // on odd myValue invert switch_value
+        if (myValue & 1)
+            invert_value = !invert_value;
+
+        dataOut[_SymbolCount - 1 - recursionDepth] = myValue;
+        this->_unrank(rank, dataOut, recursionDepth + 1, invert_value);
     }
 
     static constexpr bool _validate_parameter() {
