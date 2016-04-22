@@ -21,7 +21,7 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
 
     struct Iterator {
         Iterator& operator++() {
-            if (!this->_successor()){
+            if (!this->_successor()) {
                 // increase not possible
                 // -> last empty element
                 for (auto& e : this->m_Data)
@@ -31,6 +31,20 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
         }
         Iterator& operator++(int) { return ++(*this); }
         Iterator& successor() { return ++(*this); }
+
+        Iterator& operator--() {
+            if (!this->_successor(0, false)) {
+                // increase not possible
+                // -> last empty element
+                for (auto& e : this->m_Data)
+                    e = -1;
+            }
+            return *this;
+        }
+        Iterator& operator--(int) { return --(*this); }
+        Iterator& predecessor() { return ++(*this); }
+
+        const Iterator& operator*() { return *this; }
 
         bool operator==(const Iterator& rhs) const {
             return this->m_Data == rhs.m_Data;
@@ -53,7 +67,7 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
         friend GrayCode;
         Iterator() = default;
 
-        bool _successor(int recursionDepth = 0, bool increase = true) {
+        bool _successor(size_t recursionDepth = 0, bool increase = true) {
             if (recursionDepth >= this->m_Data.size())
                 return false;
 
@@ -63,15 +77,14 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
             const bool rec_increase = myValue & 1 ? !increase : increase;
             bool ret = this->_successor(recursionDepth + 1, rec_increase);
 
-            if (!ret){
+            if (!ret) {
                 // try in-/de-creasing own value
-                if (increase){
+                if (increase) {
                     if (myValue < q - 1)
                         ++this->m_Data[myIdx];
                     else
                         return false;
-                }
-                else{
+                } else {
                     if (myValue > 0)
                         --this->m_Data[myIdx];
                     else
@@ -110,6 +123,11 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
             e = -1;
         return toReturn;
     }
+
+    Iterator rbegin(size_t reverse_rank = 0) const {
+        return this->begin(MY_TYPE::COUNT - 1 - reverse_rank);
+    }
+    Iterator rend() const { return this->end(); }
 
     static constexpr size_t vectorCount() { return MY_TYPE::COUNT; }
 
