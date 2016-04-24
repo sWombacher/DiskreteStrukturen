@@ -24,19 +24,17 @@ int main() {
         getchar();
         std::system("clear");
         printf("Example: %d\n%s\n\n", example_counter, str);
-        if (example_counter < 4) {
-            int q = q_1;
-            int sc = symbolCount_1;
-            if (example_counter == 2) {
-                q = q_2;
-                sc = symbolCount_2;
-            } else if (example_counter == 3) {
-                q = q_3;
-                sc = symbolCount_3;
-            }
-            printf("Parameter: q= %d, bits= %d\n\n\n", q, sc);
-            ++example_counter;
+        int q = q_1;
+        int sc = symbolCount_1;
+        if (example_counter == 2) {
+            q = q_2;
+            sc = symbolCount_2;
+        } else if (example_counter == 3) {
+            q = q_3;
+            sc = symbolCount_3;
         }
+        printf("Parameter: q= %d, bits= %d\n\n\n", q, sc);
+        ++example_counter;
     };
     std::cout << "Praktikum 1\n\nLiu Kin\nWombacher Sascha" << std::endl;
 
