@@ -1,13 +1,13 @@
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 \usetheme{m}  % Use metropolis theme
 \title{Diskrete Strukturen \newline Praktika 1}
 \date{\today}
-\author{Liu Kin \newline Wombacher Sascha}
+\author{Liu Kin \newline Wombacher Sascha \newline}
 \usepackage{float}
 \usepackage{listings}
 \usepackage[utf8]{inputenc}
 \usepackage[ngerman]{babel}
-
+\usepackage{dirtytalk} % simple quotes
 
 
 \lstset{
@@ -46,16 +46,148 @@
   \end{frame}
   
   
-  \section{Generatormatrix Allgemein}
-    \begin{frame}{Generatormatrix}
+\section{Allgemeines}
+    \begin{frame}{Allgemeines}
+    Allgemeines:
 	\begin{itemize}
-		\item Sind $k \times n$ Matrizen
-		\item Sind Matrizen mit linear unabhängigen Zeilen
-		\item Werden verwendet um eine Nachricht der länge $k$ in ein Codewort der länge $n$ zu überführen (Matrixmultiplikation)
-		\item Jede Zeile ist auch ein Codewort
+		\item Aufgabe 1 ist lediglich eine Festlegung von $q=2$
+		\item rank/unrank/successor werden für allgemeine $q$ erklärt
+		\item Wenn $q$ einen geraden Wert besitzt ist es auch ein zyklischer Code
   	\end{itemize}
-    \end{frame}  
+	Anmerkung: \newline
+	Rekursionsgleichung wurde aus dem Skript übernommen (möglicherweise ein Schreibfehler in der Aufgabenstellung!)
+    \end{frame}
+    
+\section{Rank}
+    \begin{frame}{Rank \newline Part 1: Allgemeines}
+    Allgemeines:
+    \begin{itemize}
+	    \item Dient zur Bestimmung des \say{Index} eines übergebenen Codes
+	    \item Benötigt wissen über das Alphabet $q$
+	    \item Benötigt wissen über die Länge des Codes
+    \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{Rank \newline Part 2: Algorithmenbeschreibung}
+    Algorithmus:
+	\begin{itemize}
+	    \item Beginne von rechts
+	    \item Gelesenes Symbol beschreibt einen Bereich
+	    \item Dieser Bereich beschreibt ein Offset für den Rückgabe Index
+	    \item Rekursiver Aufruf ohne des Gelesen Symbols \newline
+	    \item Rückgabe bei Geradem Symbol (\say{Leserichtung von links}): \newline Offset + RekursiverRückgabewert \newline
+		\item Rückgabe bei Ungeradem Symbol (\say{Leserichtung von rechts}): \newline Offset - RekursiverRückgabewert - 1 + <BereichGröße>
+    \end{itemize}
+    \end{frame}
 
+	\begin{frame}{Rank \newline Part 3: Beispiel}
+	Übergebenes Objekt: $rank(012)$, $q=3$ \newline
+	
+	Lese letztes Element: 2 (gerade)\newline
+	Rückgabe: $2 \cdot q^2 + rank(01) = 23$\newline
+	
+	Lese letztes Element: 1 (ungerade) \newline
+	Rückgabe: $1 \cdot q^1 - rank(0) - 1 + q^1 = 5$\newline
+	
+	Lese letztes Element: 0 (gerade, kein folge Element) \newline
+	Rückgabe: $0$
+	\end{frame}
+
+
+\section{Unrank}
+    \begin{frame}{Unrank \newline Part 1: Allgemeines}
+    Allgemeines:
+    \begin{itemize}
+	    \item Dient zur Bestimmung eines Codes anhand eines \say{Index}
+	    \item Benötigt wissen über das Alphabet $q$
+	    \item Benötigt wissen über die Länge des Codes
+    \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{Unrank \newline Part 2: Algorithmenbeschreibung}
+    Algorithmus:
+	\begin{itemize}
+	    \item Beginne von rechts das Array zu füllen
+	    \item Generiere $q$ Bereiche über $q^{bitPosition}$ Werte
+	    \item Schreibe die Bereich Position an die nächste Array Position
+	    \item Passe den Index (für rekursion) an
+	    \item Ist der Bereich ungerade \say{invertiere} alle nachfolge Werte \newline invertiere: Wert = q - 1 - Wert 
+	    \item rekursiver Aufruf, bis alle Array Positionen besetzt sind
+    \end{itemize}
+    \end{frame}
+
+	\begin{frame}{Unrank \newline Part 3: Beispiel}
+	Übergebener Index: $i = 23$, $q=3, length=3$ \newline
+	
+	Bereiche: $0-8, 9-17, 18-26$ \newline
+	Schreibe 2 (gerade, keine Anpassungen); unrank(23 - 18 = 5, nicht inventieren) \newline
+	
+	Bereiche: $0-2, 3-5, 6-8$ \newline
+	Schreibe 1 (ungerade, inventiere folge Rekursionen); unrank(5 - 3 = 2, inventiere) \newline
+	
+	Bereiche: $0, 1, 2$ \newline
+	Eigentliche Rückgabe: $2$  \newline
+	inventieren: $3 - 1 - 2 = 0$
+	\end{frame}    
+    
+    
+\section{Successor und Predecessor}
+    \begin{frame}{Successor und Predecessor \newline Part 1: Allgemeines}
+    Allgemeines:
+    \begin{itemize}
+	    \item Dienen zur Bestimmung des nächsten (vorherigen) Codes
+	    \item Benötigt wissen über das Alphabet $q$
+	    \item (Benötigt wissen über die Länge des Codes)
+    \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{Successor und Predecessor \newline Part 2: Algorithmenbeschreibung - Langsame Lösung}
+    Algorithmus:
+    \begin{itemize}
+	    \item Hole den Index des Objektes mit der \textit{Rank-Funktion}
+	    \item Addiere/Subtrahiere 1 von dem erhaltenen Index
+	    \item Generier ein neues Objekt mit der \textit{Unrank-Funktion}
+    \end{itemize} 
+    Performanzproblem:
+	\begin{itemize}
+	    \item Generierung eines neuen Objektes \newline => vorzüge von \textit{minimal-change} gehen \say{verloren}
+    \end{itemize}
+    \end{frame}
+        
+    \begin{frame}{Successor und Predecessor \newline Part 3: Algorithmenbeschreibung - Effizient}
+    Algorithmus:
+    \begin{itemize}
+	    \item Rufe Ink-/Dek-rementiere auf letztes Element auf
+	    \item Wiederhole dies bis zum ersten Element \newline Bei Ungeraden Eigenwert: inventiere den Aufruf \newline (ink wird zu dek und umgekehrt)
+	    \item Kann das erste Element nicht in/de krementieren \newline Versuche das zuvor kommende Element
+    \end{itemize}
+    \end{frame}
+    
+	\begin{frame}{Successor und Predecessor \newline Part 4: Beispiel 1 - Successor}
+    Übergebenes Objekt: $succ(012)$, $q=3$ \newline
+    
+    ink(012) 2 -> ink(01)\newline
+    ink(01)  1 -> dek(0) \newline
+    dek(0)   nicht möglich -> return false \newline
+    ink 1 möglch -> schreibe 2, return true \newline
+    
+    Ergebnis: \newline
+    022
+    \end{frame}
+
+	\begin{frame}{Successor und Predecessor \newline Part 4: Beispiel 2 - Predecessor}
+    Übergebenes Objekt: $pred(012)$, $q=3$ \newline
+    
+    dek(012) 2 -> dek(01)\newline
+    dek(01)  1 -> ink(0) \newline
+    ink(0) möglich -> schreibe 1, return true \newline
+
+    Ergebnis: \newline
+    112
+    \end{frame}
+
+
+\section*{Haben Sie Fragen?}
 \section*{Vielen Dank für die Aufmerksamkeit!}
   
 \end{document}
