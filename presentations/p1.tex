@@ -1,0 +1,61 @@
+\documentclass{beamer}
+\usetheme{m}  % Use metropolis theme
+\title{Diskrete Strukturen \newline Praktika 1}
+\date{\today}
+\author{Liu Kin \newline Wombacher Sascha}
+\usepackage{float}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+
+
+
+\lstset{
+	language=C++,
+    tabsize=4,
+    keepspaces,
+    extendedchars=true,
+    rulecolor=\color{black},
+    basicstyle=\footnotesize,
+    aboveskip=5pt,
+    upquote=true,
+    columns=fixed,
+    showstringspaces=false,
+    extendedchars=true,
+    breaklines=true,
+    frame=single,
+%    showtabs=true,
+    showspaces=false,
+    showstringspaces=false,
+    basicstyle=\tiny,
+    keywordstyle=\color{blue}
+}
+
+\begin{document}
+
+  \lstdefinestyle{numbers}
+  {numbers=left, stepnumber=1, numberstyle=\tiny, numbersep=10pt}
+  \lstdefinestyle{nonumbers}
+  {numbers=none}
+
+
+  \maketitle
+  \begin{frame}{Agenda}
+    \setbeamertemplate{section in toc}[sections numbered]
+    \tableofcontents[hideallsubsections]
+  \end{frame}
+  
+  
+  \section{Generatormatrix Allgemein}
+    \begin{frame}{Generatormatrix}
+	\begin{itemize}
+		\item Sind $k \times n$ Matrizen
+		\item Sind Matrizen mit linear unabhängigen Zeilen
+		\item Werden verwendet um eine Nachricht der länge $k$ in ein Codewort der länge $n$ zu überführen (Matrixmultiplikation)
+		\item Jede Zeile ist auch ein Codewort
+  	\end{itemize}
+    \end{frame}  
+
+\section*{Vielen Dank für die Aufmerksamkeit!}
+  
+\end{document}
