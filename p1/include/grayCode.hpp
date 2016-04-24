@@ -42,7 +42,7 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
             return *this;
         }
         Iterator& operator--(int) { return --(*this); }
-        Iterator& predecessor() { return ++(*this); }
+        Iterator& predecessor() { return --(*this); }
 
         const Iterator& operator*() { return *this; }
 
