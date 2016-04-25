@@ -73,11 +73,9 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
 
             const int myIdx = this->m_Data.size() - 1 - recursionDepth;
             const int myValue = this->m_Data[myIdx];
-
             const bool rec_increase = myValue & 1 ? !increase : increase;
-            bool ret = this->_successor(recursionDepth + 1, rec_increase);
 
-            if (!ret) {
+            if (!this->_successor(recursionDepth + 1, rec_increase)) {
                 // try in-/de-creasing own value
                 if (increase) {
                     if (myValue < q - 1)
@@ -138,9 +136,7 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
             return 0;
 
         int myValue = data[data.size() - 1 - recursionDepth];
-        int skipRatio = COUNT / q;
-        for (size_t i = 0; i < recursionDepth; ++i)
-            skipRatio /= q;
+        int skipRatio = MY_TYPE::COUNT / std::pow(q, recursionDepth + 1);
 
         int recVal = this->_rank(data, recursionDepth + 1);
         bool revertOrder = myValue & 1;
@@ -152,18 +148,9 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
         if (recursionDepth >= dataOut.size())
             return;
 
-        int skipRatio = MY_TYPE::COUNT / q;
-        for (size_t i = 0; i < recursionDepth; ++i)
-            skipRatio /= q;
-
-        int myValue = 0;
-
-        // calculate value to set
-        // and adjust rank value for recursive call
-        while (rank >= skipRatio) {
-            ++myValue;
-            rank -= skipRatio;
-        }
+        int skipRatio = MY_TYPE::COUNT / std::pow(q, recursionDepth + 1);
+        int myValue = rank / skipRatio;
+        rank -= myValue * skipRatio;
 
         // value invert requried?
         if (invert_value)
@@ -177,13 +164,6 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
         this->_unrank(rank, dataOut, recursionDepth + 1, invert_value);
     }
 
-    static constexpr bool _validate_parameter() {
-        for (int start = _SymbolCount; start > q; start /= q) {
-            if (start % q)
-                return false;
-        }
-        return true;
-    }
     typedef GrayCode<q, _SymbolCount, _AlphabetType> MY_TYPE;
     constexpr static size_t _calculateCount() {
         size_t toReturn = 1;
