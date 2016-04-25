@@ -65,7 +65,7 @@ int main() {
 
     next_example("Partial forward iteration");
     constexpr int START_POSITION = 95;
-    constexpr int NUM_ITERATIONS = 30;
+    constexpr int NUM_ITERATIONS = 20;
     printf("Startposition: %d, number of iterations: %d\n\n", START_POSITION, NUM_ITERATIONS);
     decltype (gray_3)::Iterator iter = gray_3.begin(START_POSITION);
     for (int i = 0; i < NUM_ITERATIONS; ++i){
