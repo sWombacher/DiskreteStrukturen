@@ -144,7 +144,7 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
                (revertOrder ? skipRatio - recVal - 1 : recVal);
     }
     void _unrank(int rank, decltype(Iterator::m_Data)& dataOut,
-                 size_t recursionDepth = 0, bool invert_value = false) const {
+                 size_t recursionDepth = 0) const {
         if (recursionDepth >= dataOut.size())
             return;
 
@@ -152,16 +152,12 @@ template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
         int myValue = rank / skipRatio;
         rank -= myValue * skipRatio;
 
-        // value invert requried?
-        if (invert_value)
-            myValue = q - 1 - myValue;
-
         // on odd myValue invert switch_value
         if (myValue & 1)
-            invert_value = !invert_value;
+            rank = skipRatio - 1 - rank;
 
         dataOut[dataOut.size() - 1 - recursionDepth] = myValue;
-        this->_unrank(rank, dataOut, recursionDepth + 1, invert_value);
+        this->_unrank(rank, dataOut, recursionDepth + 1);
     }
 
     typedef GrayCode<q, _SymbolCount, _AlphabetType> MY_TYPE;
