@@ -8,32 +8,22 @@ char translate(int val) {
 }
 
 int main() {
-    constexpr int q_1 = 2;
-    constexpr int q_2 = 2;
-    constexpr int q_3 = 3;
-    constexpr int symbolCount_1 = 4;
-    constexpr int symbolCount_2 = 4;
-    constexpr int symbolCount_3 = 3;
-    GrayCode<q_1, symbolCount_1, decltype(translate(0))> gray_1(translate);
-    GrayCode<q_2, symbolCount_2, decltype(translate(0))> gray_2(translate);
-    GrayCode<q_3, symbolCount_3, decltype(translate(0))> gray_3(translate);
+    constexpr int q[] = { 2, 2, 3, 10 };
+    constexpr int symbolCount[] = { 4, 4, 3, 4 };
+    GrayCode<q[0], symbolCount[0], decltype(translate(0))> gray_0(translate);
+    GrayCode<q[1], symbolCount[1], decltype(translate(0))> gray_1(translate);
+    GrayCode<q[2], symbolCount[2], decltype(translate(0))> gray_2(translate);
+    GrayCode<q[3], symbolCount[3], decltype(translate(0))> gray_3(translate);
 
-    int example_counter = 1;
-    auto next_example = [&example_counter](const char* str) {
+    int example_counter = 0;
+    auto next_example = [&example_counter, &q, &symbolCount](const char* str) {
         std::cout << std::endl;
         getchar();
         std::system("clear");
         printf("Example: %d\n%s\n\n", example_counter, str);
-        int q = q_1;
-        int sc = symbolCount_1;
-        if (example_counter == 2) {
-            q = q_2;
-            sc = symbolCount_2;
-        } else if (example_counter == 3) {
-            q = q_3;
-            sc = symbolCount_3;
-        }
-        printf("Parameter: q= %d, bits= %d\n\n\n", q, sc);
+        int _q = q[example_counter];
+        int sc = symbolCount[example_counter];
+        printf("Parameter: q= %d, bits= %d\n\n\n", _q, sc);
         ++example_counter;
     };
     std::cout << "Praktikum 1\n\nLiu Kin\nWombacher Sascha" << std::endl;
@@ -57,21 +47,31 @@ int main() {
 
     next_example("Direct rank/unrank access");
     constexpr int hard_coded_symbol = 8;
-    auto iter_start = gray_1.begin(hard_coded_symbol);
+    auto iter_start = gray_0.begin(hard_coded_symbol);
 
     std::cout << iter_start << std::endl;
-    std::cout << "value: " << gray_1.rank(iter_start) << std::endl << std::endl;
+    std::cout << "value: " << gray_0.rank(iter_start) << std::endl << std::endl;
 
     std::cout << "Character translated:\n";
-    auto charArray = gray_1.unrank(gray_1.rank(iter_start));
+    auto charArray = gray_0.unrank(gray_0.rank(iter_start));
     for (auto& e : charArray)
         std::cout << e;
 
     next_example("Forward Iteration");
-    iteration_function(gray_2, true);
+    iteration_function(gray_1, true);
 
     next_example("Backward Iteration");
-    iteration_function(gray_3, false);
+    iteration_function(gray_2, false);
+
+    next_example("Partial forward iteration");
+    constexpr int START_POSITION = 95;
+    constexpr int NUM_ITERATIONS = 30;
+    printf("Startposition: %d, number of iterations: %d\n\n", START_POSITION, NUM_ITERATIONS);
+    decltype (gray_3)::Iterator iter = gray_3.begin(START_POSITION);
+    for (int i = 0; i < NUM_ITERATIONS; ++i){
+        std::cout << "Rank: " << gray_3.rank(iter) << "\tObjekt: "<< iter;
+        ++iter;
+    }
 
     getchar();
     return 0;
