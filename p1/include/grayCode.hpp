@@ -6,6 +6,7 @@
 #include <inttypes.h>
 #include <algorithm>
 #include <iostream>
+#include <math.h>
 #include <array>
 
 template <int q, int _SymbolCount, typename _AlphabetType> struct GrayCode {
