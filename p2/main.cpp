@@ -80,7 +80,9 @@ int main(){
 /// ikosaeders
     newGroup("Ikosaeders");
     Group<int, 12> ikosaeders = {
-
+        {0,2,3,4,5,1,7,8,9,10,6,11}, // rotation on vertices 0 and 11
+        {2,7,8,3,0,1,6,11,9,4,5,10}, // rotation on vertices 3 and 6
+        {0,3,2,1,5,4,9,8,7,6,10,11}  // mirror on plain 0, 2, 10, 11
     };
     std::cout << "Size:\t" << ikosaeders.size() << std::endl << std::endl;
     std::cout << ikosaeders << std::endl << std::endl;
