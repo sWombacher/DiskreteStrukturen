@@ -1,8 +1,8 @@
 #include "group.hpp"
 #include <iostream>
 
+
 int main(){
-    //Permutation<int, 8> per = {1,2,3,0,5,6,7,4};
     Permutation<int, 6> per1 = {1,0,3,2,5,4};
     Permutation<int, 6> per2 = {5,4,1,3,2,0};
 
@@ -34,7 +34,8 @@ int main(){
 /// triangle
     newGroup("Reguläres Dreieck");
     Group<int, 3> triangle = {
-        {0,2,1}, {1,2,0}
+        {0,2,1},
+        {1,2,0}
     };
     std::cout << "Size:\t" << triangle.size() << std::endl << std::endl;
     std::cout << triangle << std::endl << std::endl;
@@ -43,7 +44,9 @@ int main(){
 /// rectangle
     newGroup("Allgemeines Rechteck");
     Group<int, 4> rectangle = {
-        {2,3,0,1}, {1,0,3,2}, {3,2,1,0}
+        {2,3,0,1},
+        {1,0,3,2},
+        {3,2,1,0}
     };
     std::cout << "Size:\t" << rectangle.size() << std::endl << std::endl;
     std::cout << rectangle << std::endl << std::endl;
@@ -52,7 +55,8 @@ int main(){
 /// tetraeder
     newGroup("Tetraeder");
     Group<int, 4> tetraeder = {
-        {0,2,3,1}, {1,0,2,3}
+        {0,2,3,1},
+        {1,0,2,3}
     };
     std::cout << "Size:\t" << tetraeder.size() << std::endl << std::endl;
     std::cout << tetraeder << std::endl << std::endl;
@@ -61,7 +65,13 @@ int main(){
 /// dice
     newGroup("Würfel");
     Group<int, 8> dice = {
-        {1,2,3,0,4,5,6,7}, {1,0,2,3,4,5,6,7}, {4,1,2,3,0,5,6,7}, {3,1,2,0,4,5,6,7}
+        {1,2,3,0,5,6,7,4}, // face rotation x axis
+        {4,5,1,0,7,6,2,3}, // face rotation y axis
+        {1,5,6,2,0,4,7,3}, // face rotation z axis
+
+        {1,0,3,2,5,4,7,6}, // mirror x axis
+        {4,5,6,7,0,1,2,3}, // mirror y axis
+        {3,2,1,0,7,6,5,4}  // mirror z axis
     };
     std::cout << "Size:\t" << dice.size() << std::endl << std::endl;
     std::cout << dice << std::endl << std::endl;
@@ -69,7 +79,7 @@ int main(){
 
 /// ikosaeders
     newGroup("Ikosaeders");
-    Group<int, 3> ikosaeders = {
+    Group<int, 12> ikosaeders = {
 
     };
     std::cout << "Size:\t" << ikosaeders.size() << std::endl << std::endl;
