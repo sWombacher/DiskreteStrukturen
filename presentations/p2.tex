@@ -38,7 +38,6 @@
   \lstdefinestyle{nonumbers}
   {numbers=none}
 
-
   \maketitle
   \begin{frame}{Agenda}
     \setbeamertemplate{section in toc}[sections numbered]
@@ -48,32 +47,75 @@
   
 \section{Aufgabe 1}
     \begin{frame}{Aufgabe 1 \newline Multiplikation}
+    	Eingabe: Ursprüngliche Permutation $x$ und eine darauf anzuwendende Permutation $P$ \newline
+    	Ausgabe: Permutiertes Objekt $y$ \newline
+    	\mbox{} \newline
+    	Iteriere über alle Elemente in $P$
+    	\begin{itemize}
+    		\item setze $y[i] = x[P[i]]$
+    	\end{itemize}
     \end{frame}
     
     \begin{frame}{Aufgabe 1 \newline Inversion}
+    	Gleich wie die Multiplikation, \newline vertausche lediglich den Index mit dem Wert
     \end{frame}
     
     \begin{frame}{Aufgabe 1 \newline Zyklennotation}
+    	Ausgabe in Zyklen-Notation
+    	\begin{itemize}
+    		\item Finde den nächsten (unbenutzten) Zykel/Element
+    		\item Sortiere den gefundenen Zykel (kleinste Element nach vorne)
+    		\item Ist die Elementanzahl im $Zykel > 1$ gib den Zykel aus
+    	\end{itemize}
     \end{frame}
     
 \section{Aufgabe 2}
 	\begin{frame}{Gruppengenerierung}
+		Zur Gruppengeneration wird jeder mit jeden Permutation multipliziert bis keine neuen Permutationen hinzugefügt werden
 	\end{frame}
 
 \section{Aufgabe 3}
 	\begin{frame}{Reguläres Dreieck}
+		Für ein reguläres Dreieck wurden folgende Permutationsbasen verwendet:
+		\begin{itemize}
+			\item Achsenspiegelung \newline \{0,2,1\}
+			\item Rotation \newline \{1,2,0\}
+		\end{itemize}
 	\end{frame}
 	
 	\begin{frame}{Generelles Rechteck}
+		Für ein generelles Rechteck wurden folgende Permutationsbasen verwendet:
+		\begin{itemize}
+			\item Achsenspiegelung an der x-Achse \newline \{2,3,0,1\}
+			\item Achsenspiegelung an der y-Achse \newline \{1,0,3,2\}
+			\item Rotation \newline \{3,2,1,0\}
+		\end{itemize}
 	\end{frame}
 	
 	\begin{frame}{Tetraeder}
+		Für das Tetraeder wurden folgende Permutationsbasen verwendet:
+		\begin{itemize}
+			\item Rotation einer Fläche \newline \{0,2,3,1\}
+			\item Achsenspiegelung an der 2,3-Fläche \newline \{1,0,2,3\}
+		\end{itemize}
 	\end{frame}
 	
 	\begin{frame}{Würfel}
+		Für einen Würfel wurden folgende Permutationsbasen verwendet:
+		\begin{itemize}
+			\item Rotation um die x-Achse \newline \{1,2,3,0,5,6,7,4\}
+			\item Rotation um die y-Achse \newline \{4,5,1,0,7,6,2,3\}
+			\item Spiegelung an der verschobenen xz-Ebene \newline \{1,0,3,2,5,4,7,6\}
+		\end{itemize}
 	\end{frame}
 	
 	\begin{frame}{Ikosaeder}
+		Für das Ikosaeder wurden folgende Permutationsbasen verwendet:
+		\begin{itemize}
+			\item Rotation um 0,11-Achse \newline \{0,2,3,4,5,1,7,8,9,10,6,11\}
+			\item Rotation um 3,6-Achse \newline \{2,7,8,3,0,1,6,11,9,4,5,10\}
+			\item Spiegelung an der 0,2,10,11-Fläche \newline \{0,3,2,1,5,4,9,8,7,6,10,11\}
+		\end{itemize}
 	\end{frame}
 
 \section*{Haben Sie Fragen?}
