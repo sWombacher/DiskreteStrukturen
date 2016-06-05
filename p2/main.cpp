@@ -13,7 +13,7 @@ int main(){
     per1.applyPermutation(per2);
     std::cout << "Apply permutation 2 on permutation 1:\n" << per1 << std::endl << std::endl;
 
-    per1.inversePermutation(per2);
+    per1.undoPermutation(per2);
     std::cout << "Inverse permutation:\n" << per1 << std::endl << std::endl;
 
     auto newGroup = [](const char* str){
