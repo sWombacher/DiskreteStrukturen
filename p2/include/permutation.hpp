@@ -36,12 +36,11 @@ public:
     }
 
     MY_TYPE insversePermutation(){
-        std::array<IntegerType, SIZE> id;
-        for (IntegerType i = 0; i < id.size(); ++i)
-            id[i] = i;
-        MY_TYPE per(id);
-        per.undoPermutation(this->m_Data);
-        return per;
+        MY_TYPE identity;
+        for (IntegerType i = 0; i < identity.m_Data.size(); ++i)
+            identity.m_Data[i] = i;
+        identity.undoPermutation(this->m_Data);
+        return identity;
     }
 
     void applyPermutation (const MY_TYPE& rhs) { this->applyPermutation(rhs.m_Data); }
