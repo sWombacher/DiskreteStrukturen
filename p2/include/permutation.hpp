@@ -16,7 +16,7 @@ public:
 
     Permutation& operator= (const Permutation&) = default;
     Permutation& operator= (Permutation&&) = default;
-    bool operator==(const Permutation& rhs) { return this->m_Data == rhs.m_Data; };
+    bool operator==(const Permutation& rhs) const { return this->m_Data == rhs.m_Data; }
 
     Permutation(std::initializer_list<IntegerType> list) {
         int idx = 0;
@@ -40,8 +40,8 @@ public:
         for (size_t i = 0; i < per.size(); ++i)
             this->m_Data[i] = cpy[per[i]];
     }
-    void inversePermutation(const MY_TYPE& rhs) { this->inversePermutation(rhs.m_Data); };
-    void inversePermutation(const std::array<int, SIZE>& per){
+    void undoPermutation(const MY_TYPE& rhs) { this->undoPermutation(rhs.m_Data); }
+    void undoPermutation(const std::array<int, SIZE>& per){
         std::array<IntegerType, SIZE> cpy = this->m_Data;
         for (size_t i = 0; i < per.size(); ++i)
             this->m_Data[per[i]] = cpy[i];

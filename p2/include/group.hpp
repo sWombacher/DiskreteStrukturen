@@ -25,23 +25,18 @@ public:
         do {
             lastSize = this->m_Permutations.size();
             for (const auto& toMultiply : container){
-                for (size_t perIter = 0; perIter < lastSize; ++perIter)
-                    this->m_Permutations.push_back(this->m_Permutations[perIter] * toMultiply);
-            }
-
-            // remove all duplicate permutations
-            // Note:
-            //      after implementing a "Permutation < Permutation" comparison
-            //      a simple sort could create a speed up
-            for (size_t lhs = 0      ; lhs < this->m_Permutations.size(); ++lhs){
-            for (size_t rhs = lhs + 1; rhs < this->m_Permutations.size(); ++rhs){
-                if (this->m_Permutations[lhs] == this->m_Permutations[rhs]){
-                    // element is a duplicate
-                    // remove it and readjust rhs iterator
-                    this->m_Permutations.erase(std::begin(this->m_Permutations) + rhs);
-                    --rhs;
+                for (size_t perIter = 0; perIter < lastSize; ++perIter){
+                    PERMUTATION tmp = this->m_Permutations[perIter] * toMultiply;
+                    bool alreadyInVector = false;
+                    for (const auto& e :this->m_Permutations){
+                        if (e == tmp){
+                            alreadyInVector = true;
+                            break;
+                        }
+                    }
+                    if (!alreadyInVector)
+                        this->m_Permutations.push_back(tmp);
                 }
-            }
             }
         } while (lastSize != this->m_Permutations.size());
     }
