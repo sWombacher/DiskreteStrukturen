@@ -30,6 +30,13 @@ int main(){
     std::cout << "Size:\t" << simpleExample.size() << std::endl << std::endl;
     std::cout << simpleExample << std::endl << std::endl;
 
+    newGroup("Inverse");
+    Permutation<int, 4> ori = {0,2,3,1};
+    Permutation<int, 4> inv = ori.insversePermutation();
+    std::cout << "Original permutation: " << ori << std::endl
+              << "Inverse  permutation: " << inv << std::endl
+              << "Original * permutation: " << ori * inv << std::endl
+              << std::endl;
 
 /// triangle
     newGroup("Reguläres Dreieck");

@@ -12,6 +12,7 @@ public:
     Permutation() = default;
     Permutation(const Permutation&) = default;
     Permutation(Permutation&&) = default;
+    Permutation(const std::array<IntegerType, SIZE>& data){ this->m_Data = data; }
     ~Permutation()= default;
 
     Permutation& operator= (const Permutation&) = default;
@@ -34,8 +35,17 @@ public:
         return cpy;
     }
 
-    void applyPermutation  (const MY_TYPE& rhs) { this->applyPermutation(rhs.m_Data); }
-    void applyPermutation  (const std::array<IntegerType, SIZE>& per){
+    MY_TYPE insversePermutation(){
+        std::array<IntegerType, SIZE> id;
+        for (IntegerType i = 0; i < id.size(); ++i)
+            id[i] = i;
+        MY_TYPE per(id);
+        per.undoPermutation(this->m_Data);
+        return per;
+    }
+
+    void applyPermutation (const MY_TYPE& rhs) { this->applyPermutation(rhs.m_Data); }
+    void applyPermutation (const std::array<IntegerType, SIZE>& per){
         std::array<IntegerType, SIZE> cpy = this->m_Data;
         for (size_t i = 0; i < per.size(); ++i)
             this->m_Data[i] = cpy[per[i]];
