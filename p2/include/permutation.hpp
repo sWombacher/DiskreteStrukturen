@@ -37,7 +37,7 @@ public:
 
     MY_TYPE insversePermutation(){
         MY_TYPE identity;
-        for (IntegerType i = 0; i < identity.m_Data.size(); ++i)
+        for (IntegerType i = 0; i < IntegerType(identity.m_Data.size()); ++i)
             identity.m_Data[i] = i;
         identity.undoPermutation(this->m_Data);
         return identity;

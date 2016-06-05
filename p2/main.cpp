@@ -3,6 +3,15 @@
 
 
 int main(){
+    std::cout << "Praktikum 2\n\nLiu Kin\nWombacher Sascha" << std::endl;
+
+    auto newGroup = [](const char* str){
+        getchar();
+        std::system("clear");
+        std::cout << str << std::endl << std::endl;
+    };
+
+    newGroup("Multiplication");
     Permutation<int, 6> per1 = {1,0,3,2,5,4};
     Permutation<int, 6> per2 = {5,4,1,3,2,0};
 
@@ -13,23 +22,6 @@ int main(){
     per1.applyPermutation(per2);
     std::cout << "Apply permutation 2 on permutation 1:\n" << per1 << std::endl << std::endl;
 
-    per1.undoPermutation(per2);
-    std::cout << "Inverse permutation:\n" << per1 << std::endl << std::endl;
-
-    auto newGroup = [](const char* str){
-        getchar();
-        std::system("clear");
-        std::cout << str << std::endl << std::endl;
-    };
-
-/// example
-    newGroup("simple example");
-    Group<int, 8> simpleExample = {
-        {1,2,3,4,5,6,7,0}
-    };
-    std::cout << "Size:\t" << simpleExample.size() << std::endl << std::endl;
-    std::cout << simpleExample << std::endl << std::endl;
-
     newGroup("Inverse");
     Permutation<int, 4> ori = {0,2,3,1};
     Permutation<int, 4> inv = ori.insversePermutation();
@@ -37,6 +29,15 @@ int main(){
               << "Inverse  permutation: " << inv << std::endl
               << "Original * permutation: " << ori * inv << std::endl
               << std::endl;
+
+
+/// Group example
+    newGroup("simple group example");
+    Group<int, 8> simpleExample = {
+        {1,2,3,4,5,6,7,0}
+    };
+    std::cout << "Size:\t" << simpleExample.size() << std::endl << std::endl;
+    std::cout << simpleExample << std::endl << std::endl;
 
 /// triangle
     newGroup("Reguläres Dreieck");
