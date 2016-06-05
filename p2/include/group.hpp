@@ -26,7 +26,7 @@ public:
             lastSize = this->m_Permutations.size();
             for (const auto& toMultiply : container){
                 for (size_t perIter = 0; perIter < lastSize; ++perIter){
-                    PERMUTATION tmp = this->m_Permutations[perIter] * toMultiply;
+                    const PERMUTATION tmp = this->m_Permutations[perIter] * toMultiply;
                     bool alreadyInVector = false;
                     for (const auto& e :this->m_Permutations){
                         if (e == tmp){
