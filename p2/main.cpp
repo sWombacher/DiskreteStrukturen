@@ -4,7 +4,6 @@
 
 int main(){
     std::cout << "Praktikum 2\n\nLiu Kin\nWombacher Sascha" << std::endl;
-
     auto newGroup = [](const char* str){
         getchar();
         std::system("clear");

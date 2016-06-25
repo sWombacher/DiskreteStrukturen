@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-template<typename IntegerType, long long SIZE>
+template<typename IntegerType, long long SIZE, bool IS_SUBSET = false>
 class Permutation final{
-    typedef Permutation<IntegerType, SIZE> MY_TYPE;
+    typedef Permutation<IntegerType, SIZE, IS_SUBSET> MY_TYPE;
 public:
     Permutation() = default;
     Permutation(const Permutation&) = default;
@@ -18,6 +18,7 @@ public:
     Permutation& operator= (const Permutation&) = default;
     Permutation& operator= (Permutation&&) = default;
     bool operator==(const Permutation& rhs) const { return this->m_Data == rhs.m_Data; }
+    bool operator!=(const Permutation& rhs) const { return !(*this == rhs); }
 
     Permutation(std::initializer_list<IntegerType> list) {
         int idx = 0;
@@ -57,6 +58,14 @@ public:
     }
 
     friend std::ostream& operator<< (std::ostream& os, const MY_TYPE& per){
+        if (IS_SUBSET){
+            os << std::string("{ ");
+            for (const auto& e : per.m_Data)
+                os << e << ' ';
+            os << std::string("}");
+            return os;
+        }
+
         std::array<bool, SIZE> usedIndices;
         std::fill(std::begin(usedIndices), std::end(usedIndices), false);
 
@@ -107,7 +116,15 @@ public:
         return os;
     }
 
+    static MY_TYPE GET_IDENTITY(){
+        MY_TYPE toReturn;
+        for (size_t i = 0; i < toReturn.m_Data.size(); ++i)
+            toReturn.m_Data[i] = i;
+        return toReturn;
+    }
 
+    std::array<IntegerType, SIZE>& data(){ return this->m_Data; }
+    const std::array<IntegerType, SIZE>& data() const { return this->m_Data; }
 
 private:
     std::array<IntegerType, SIZE> m_Data;
