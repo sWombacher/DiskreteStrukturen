@@ -94,11 +94,6 @@ public:
                     break;
             }
 
-
-            /// TEST
-            auto tmp = _CALCULATE_TRANSVERSALE(std::vector<MY_PERMUTATION>(generators));
-            /// END TEST
-
             // new orbit found
             this->m_Queues.emplace_back();
             this->m_Omegas.emplace_back();
