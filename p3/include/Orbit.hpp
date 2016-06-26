@@ -7,6 +7,32 @@
 #include <iostream>
 #include <algorithm>
 
+namespace Color {
+    enum Code {
+        FG_RED      = 31,
+        FG_GREEN    = 32,
+        FG_BLUE     = 34,
+        FG_DEFAULT  = 39,
+        BG_RED      = 41,
+        BG_GREEN    = 42,
+        BG_BLUE     = 44,
+        BG_DEFAULT  = 49
+    };
+    class Modifier {
+        Code code;
+    public:
+        Modifier(Code pCode) : code(pCode) {}
+        friend std::ostream&
+        operator<<(std::ostream& os, const Modifier& mod) {
+            return os << "\033[" << mod.code << "m";
+        }
+    };
+}
+
+Color::Modifier colModifire(Color::Code::FG_GREEN);
+Color::Modifier colModDefault(Color::Code::FG_DEFAULT);
+
+
 template<typename _IntegerType, long long SIZE, long long PARTITION_SIZE_K>
 class OrbitGroup{
     typedef OrbitGroup<_IntegerType, SIZE, PARTITION_SIZE_K> MY_TYPE;
@@ -29,8 +55,8 @@ public:
             }
             return false;
         };
-        MY_PARTITION_PERMUTATION unusedPartition = MY_PARTITION_PERMUTATION::GET_IDENTITY();
 
+        MY_PARTITION_PERMUTATION unusedPartition = MY_PARTITION_PERMUTATION::GET_IDENTITY();
         for (size_t idx = 0;; ++idx) {
             // get unused permutation
             while (unusedPartition != last){
@@ -68,6 +94,11 @@ public:
                     break;
             }
 
+
+            /// TEST
+            auto tmp = _CALCULATE_TRANSVERSALE(std::vector<MY_PERMUTATION>(generators));
+            /// END TEST
+
             // new orbit found
             this->m_Queues.emplace_back();
             this->m_Omegas.emplace_back();
@@ -75,7 +106,7 @@ public:
 
             this->m_Queues[idx].push_back(unusedPartition);
             this->m_Omegas[idx].push_back(unusedPartition);
-            this->m_Alphas[idx].push_back(MY_PERMUTATION::GET_IDENTITY());
+            this->m_Alphas[idx].emplace_back(MY_PERMUTATION::GET_IDENTITY(), unusedPartition);
 
             auto omegaContainsElement = [this, &idx](const MY_PARTITION_PERMUTATION& p){
                 for (auto& e : this->m_Omegas[idx]){
@@ -95,34 +126,51 @@ public:
                         this->m_Queues[idx].push_back(x2);
                         this->m_Omegas[idx].push_back(x2);
 
-                        MY_PERMUTATION alpha2add = this->m_Alphas[idx][this->m_Alphas[idx].size() - 1] * e;
+                        MY_PERMUTATION alpha2add = this->m_Alphas[idx][this->m_Alphas[idx].size() - 1].usedPermutation * e;
 
                         bool addElement = true;
                         for (const auto& e : this->m_Alphas[idx]){
-                            if (e == alpha2add){
+                            if (e.usedPermutation == alpha2add){
                                 addElement = false;
                                 break;
                             }
                         }
                         if (addElement)
-                            this->m_Alphas[idx].push_back(alpha2add);
+                            this->m_Alphas[idx].emplace_back(alpha2add, x2);
                     }
                 }
             }
 
-            //this->m_SubGroupGenerators.emplace_back();
-            auto transversals = MY_TYPE::_CALCULATE_TRANSVERSALE(this->m_Alphas[idx]);
+            this->m_SubGroupGenerators.emplace_back();
+            const auto& obj = this->m_Alphas[idx][0].object;
 
-            for (const auto& transversal : transversals){
+            for (const auto& alpha : this->m_Alphas[idx]){
                 for (const auto& generator : generators){
-                    auto tmp = generator * transversal;
-                    tmp = tmp.insversePermutation() * tmp;
-                    //this->m_SubGroupGenerators[idx].push_back(tmp);
-                    //this->m_SubGroupGenerators[idx].pop_back();
+
+                    auto tmp1 = this->_adjustedPermutationMultiplication(obj, alpha.usedPermutation);
+                    tmp1 = this->_adjustedPermutationMultiplication(tmp1, generator);
+
+                    // search for object
+                    for (const auto& e : this->m_Alphas[idx]){
+                        if (e.object == tmp1){
+                            auto permutation = alpha.usedPermutation * generator;
+                            permutation = permutation * e.usedPermutation.insversePermutation();
+
+                            bool subGroupGeneratorFound = false;
+                            for (const auto& subGroupGenerator : this->m_SubGroupGenerators[idx]){
+                                if (subGroupGenerator == permutation){
+                                    subGroupGeneratorFound = true;
+                                    break;
+                                }
+                            }
+                            if (!subGroupGeneratorFound)
+                                this->m_SubGroupGenerators[idx].push_back(permutation);
+
+                            break;
+                        }
+                    }
                 }
             }
-
-            this->m_SubGroupGenerators.push_back(MY_TYPE::_CALCULATE_TRANSVERSALE(this->m_Alphas[idx]));
         }
     }
 
@@ -131,8 +179,10 @@ public:
         os << "(Omega) Orbits:\n\n";
         for (const auto& omega : orbit.m_Omegas) {
             os << "Orbit representant: " << ++idx << std::endl;
+
+            int colModifireCounter = 0;
             for (const auto& e : omega)
-                os << e << "   ";
+                os << (colModifireCounter++ == 0 ? colModifire : colModDefault) << e << "   " << colModDefault;
             os << std::endl << std::endl;
         }
 
@@ -148,9 +198,9 @@ public:
         */
 
         idx = 0;
-        os << "\n\nTransverstals:\n" << std::endl;
+        os << "\n\nGeneratorss:\n" << std::endl;
         for (const auto& generator : orbit.m_SubGroupGenerators) {
-            os << "Transverstal: " << ++idx << std::endl;
+            os << "Generator: " << ++idx << std::endl;
             for (const auto& e : generator)
                os << e << std::endl;
             os << std::endl << std::endl << std::endl;
@@ -162,10 +212,13 @@ private:
     std::vector<std::vector<MY_PERMUTATION>> m_SubGroupGenerators;
 
     struct Alpha{
+        Alpha() = default;
+        Alpha(const MY_PERMUTATION& per, const MY_PARTITION_PERMUTATION& obj) : usedPermutation(per), object(obj){}
+
         MY_PERMUTATION usedPermutation;
         MY_PARTITION_PERMUTATION object;
     };
-    std::vector<std::vector<MY_PERMUTATION>> m_Alphas;
+    std::vector<std::vector<Alpha>> m_Alphas;
     std::vector<std::list  <MY_PARTITION_PERMUTATION>> m_Queues;
     std::vector<std::vector<MY_PARTITION_PERMUTATION>> m_Omegas;
 
@@ -185,10 +238,45 @@ private:
         return container;
     }
 
-    template<typename _ConteinerType>
-    static std::vector<typename _ConteinerType::value_type> _CALCULATE_TRANSVERSALE(const _ConteinerType& generators){
-        typedef typename _ConteinerType::value_type type;
-        _ConteinerType delta = generators;
+    static std::vector<Alpha> _CALCULATE_TRANSVERSALE(const std::vector<Alpha>& generators){
+        std::vector<Alpha> delta = generators;
+        std::vector<Alpha> t;
+
+        while (delta.size()){
+            Alpha x = delta[delta.size() - 1];
+            delta.pop_back();
+
+            std::list<Alpha> queue;
+            queue.push_back(x);
+            t.push_back(x);
+
+            while (queue.size()){
+                Alpha x1 = queue.front();
+                queue.pop_front();
+
+                for (const auto& e : generators){
+                    Alpha tmp;
+                    tmp.usedPermutation = x1.usedPermutation * e.usedPermutation;
+
+                    for (auto iter = delta.begin(); iter != delta.end(); ++iter){
+                        if (iter->usedPermutation == tmp.usedPermutation){
+                            queue.push_back(tmp);
+                            delta.erase(iter);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return t;
+    }
+
+
+
+    template<typename _ContainerType>
+    static std::vector<typename _ContainerType::value_type> _CALCULATE_TRANSVERSALE(const _ContainerType& generators){
+        typedef typename _ContainerType::value_type type;
+        _ContainerType delta = generators;
         std::vector<type> t;
 
         while (delta.size()){
@@ -204,11 +292,11 @@ private:
                 queue.pop_front();
 
                 for (const auto& e : generators){
-                    type x2 = x1 * e;
+                    type tmp = x1 * e;
 
                     for (auto iter = delta.begin(); iter != delta.end(); ++iter){
-                        if (*iter == x2){
-                            queue.push_back(x2);
+                        if (*iter == tmp){
+                            queue.push_back(tmp);
                             delta.erase(iter);
                             break;
                         }

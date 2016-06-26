@@ -36,7 +36,7 @@ public:
         return cpy;
     }
 
-    MY_TYPE insversePermutation(){
+    MY_TYPE insversePermutation() const {
         MY_TYPE identity;
         for (IntegerType i = 0; i < IntegerType(identity.m_Data.size()); ++i)
             identity.m_Data[i] = i;

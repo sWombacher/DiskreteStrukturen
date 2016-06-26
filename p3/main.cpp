@@ -18,7 +18,7 @@ int main(){
     std::cout << groupA;
 
 
-
+/*
     newGroup("Test b: Example from lesson");
     std::cout << "n = 4, k = 3\n"
                  "γ0 = (0 3 1 2)\n"
@@ -27,7 +27,7 @@ int main(){
 
     OrbitGroup<int, 4, 3> groupB = { {1, 0, 2, 3}, {3, 1, 2, 0} };
     std::cout << groupB;
-
+*/
 
 
     newGroup("Test c: Example from lesson");
@@ -36,7 +36,7 @@ int main(){
                  "γ1 = (2 3)"
               << "\nResult:\n\n\n";
 
-    OrbitGroup<int, 4, 2> groupC = { {2, 1, 3, 0}, {0, 1, 3, 2} };
+    OrbitGroup<int, 4, 2> groupC = { {0, 1, 3, 2}, {2, 1, 3, 0} };
     std::cout << groupC;
 
 
