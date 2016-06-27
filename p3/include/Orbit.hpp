@@ -131,8 +131,11 @@ public:
                                 break;
                             }
                         }
-                        if (addElement)
+                        if (addElement) {
                             this->m_Alphas[idx].emplace_back(alpha2add, x2);
+                            this->m_Alphas[idx][this->m_Alphas[idx].size() - 1].usedGeneratorPermutations = this->m_Alphas[idx][this->m_Alphas[idx].size() - 2].usedGeneratorPermutations;
+                            this->m_Alphas[idx][this->m_Alphas[idx].size() - 1].usedGeneratorPermutations.push_back(e);
+                        }
                     }
                 }
             }
@@ -144,13 +147,28 @@ public:
                 for (const auto& generator : generators){
 
                     auto tmp1 = this->_adjustedPermutationMultiplication(obj, alpha.usedPermutation);
+
+                    /*
+                    auto tmp1 = obj;
+                    for (const auto& gen : alpha.usedGeneratorPermutations)
+                        this->_adjustedPermutationMultiplication(tmp1, gen);
+                    */
+
                     tmp1 = this->_adjustedPermutationMultiplication(tmp1, generator);
 
                     // search for object
                     for (const auto& e : this->m_Alphas[idx]){
                         if (e.object == tmp1){
-                            auto inv = e.usedPermutation.insversePermutation();
-                            auto permutation = alpha.usedPermutation;
+                            MY_PERMUTATION inv = MY_PERMUTATION::GET_IDENTITY();
+                            for (const auto& gen : e.usedGeneratorPermutations)
+                                inv *= gen;
+                            inv = inv.insversePermutation();
+
+                            //auto permutation = alpha.usedPermutation;
+                            auto permutation = MY_PERMUTATION::GET_IDENTITY();
+                            for (const auto& per : alpha.usedGeneratorPermutations)
+                                permutation *= per;
+
                             permutation *= generator;
                             permutation *= inv;
 
@@ -215,6 +233,7 @@ private:
 
         MY_PERMUTATION usedPermutation;
         MY_PARTITION_PERMUTATION object;
+        std::vector<MY_PERMUTATION> usedGeneratorPermutations;
     };
     std::vector<std::vector<Alpha>> m_Alphas;
     std::vector<std::list  <MY_PARTITION_PERMUTATION>> m_Queues;
