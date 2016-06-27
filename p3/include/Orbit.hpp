@@ -121,7 +121,8 @@ public:
                         this->m_Queues[idx].push_back(x2);
                         this->m_Omegas[idx].push_back(x2);
 
-                        MY_PERMUTATION alpha2add = this->m_Alphas[idx][this->m_Alphas[idx].size() - 1].usedPermutation * e;
+                        //MY_PERMUTATION alpha2add = this->m_Alphas[idx][this->m_Alphas[idx].size() - 1].usedPermutation * e;
+                        MY_PERMUTATION alpha2add = e * this->m_Alphas[idx][this->m_Alphas[idx].size() - 1].usedPermutation;
 
                         bool addElement = true;
                         for (const auto& e : this->m_Alphas[idx]){
@@ -148,8 +149,10 @@ public:
                     // search for object
                     for (const auto& e : this->m_Alphas[idx]){
                         if (e.object == tmp1){
-                            auto permutation = alpha.usedPermutation * generator;
-                            permutation = permutation * e.usedPermutation.insversePermutation();
+                            auto inv = e.usedPermutation.insversePermutation();
+                            auto permutation = alpha.usedPermutation;
+                            permutation *= generator;
+                            permutation *= inv;
 
                             bool subGroupGeneratorFound = false;
                             for (const auto& subGroupGenerator : this->m_SubGroupGenerators[idx]){
